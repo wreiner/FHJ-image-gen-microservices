@@ -33,4 +33,13 @@ public class MqttReceiver {
 		String messageStr = new String(message, StandardCharsets.UTF_8); // Convert byte[] to String
 		System.out.println("Received message: " + messageStr);
 	}
+
+	public void receiveIngressMessage(String message) {
+		System.out.println("Received ingress message: " + message);
+	}
+
+	public void receiveGenerationResponseMessage(String message) {
+		System.out.println("Received generation response: " + message);
+	}
+
 }
