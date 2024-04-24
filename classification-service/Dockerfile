@@ -14,6 +14,7 @@ COPY classification_service.py /app
 COPY requirements-cpuonly.txt /app
 
 # install only CPU version of PyTorch
+# source: https://stackoverflow.com/a/75988106
 RUN pip install -r /app/requirements-cpuonly.txt --extra-index-url https://download.pytorch.org/whl/cpu
 # use this if cuda is needed
 # RUN pip install -r /app/requirements-withcuda.txt
