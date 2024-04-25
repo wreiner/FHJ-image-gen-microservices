@@ -44,10 +44,7 @@ public class GenerateRequestImpl implements GenerateRequestService {
 
     private void sendToRabbitMQ(GenerateRequest request) {
         try {
-            // Convert your request object to a format suitable for RabbitMQ here.
-            // This often involves converting the object to a byte[] or String.
-            // For simplicity, we're assuming your GenerateRequest can be serialized directly or has been converted appropriately.
-            rabbitTemplate.convertAndSend(exchange, routingKey, request.toJSON());
+            rabbitTemplate.convertAndSend("", routingKey, request.toJSON());
             logger.info("Successfully sent message to RabbitMQ");
         } catch (Exception e) {
             logger.error("Failed to send message to RabbitMQ", e);
