@@ -1,8 +1,6 @@
 package at.wreiner.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,13 +10,14 @@ public class GenerationRequest {
     @Id
     private UUID uuid;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private GenerationRequestStatus status;
 
     private String prompt;
 
     public GenerationRequest() {}
 
-    public GenerationRequest(UUID uuid, String status, String prompt) {
+    public GenerationRequest(UUID uuid, GenerationRequestStatus status, String prompt) {
         this.uuid = uuid;
         this.status = status;
         this.prompt = prompt;
@@ -32,11 +31,11 @@ public class GenerationRequest {
         this.uuid = uuid;
     }
 
-    public String getStatus() {
+    public GenerationRequestStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GenerationRequestStatus status) {
         this.status = status;
     }
 

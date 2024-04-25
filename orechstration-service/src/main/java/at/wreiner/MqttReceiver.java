@@ -1,45 +1,66 @@
 package at.wreiner;
 
+import at.wreiner.dto.GenerationResponseDto;
 import at.wreiner.entity.GenerationRequest;
+import at.wreiner.entity.GenerationRequestStatus;
 import at.wreiner.repository.GenerationRequestRepository;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Component
 public class MqttReceiver {
 
-	@Autowired
-	private GenerationRequestRepository generationRequestRepository;
+    private static final Logger log = LoggerFactory.getLogger(MqttReceiver.class);
+    @Autowired
+    private GenerationRequestRepository generationRequestRepository;
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private GenerationRequestService service;
 
-    public void receiveMessage(String message) {
-		System.out.println("mqtt message received <" + message + ">");
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-		try {
-			GenerationRequest generationRequest = objectMapper.readValue(message, GenerationRequest.class);
-			generationRequest.setStatus("new");
-			generationRequestRepository.save(generationRequest);
-		} catch (Exception e) {
-			System.err.println("error processing message: " + e.getMessage());
-		}
-	}
+    public void receiveIngressMessage(String message) {
+        log.info("Received ingress message: {}", message);
 
-	public void receiveMessage(byte[] message) {
-		String messageStr = new String(message, StandardCharsets.UTF_8); // Convert byte[] to String
-		System.out.println("Received message: " + messageStr);
-	}
+        GenerationRequest generationRequest = null;
+        try {
+            generationRequest = objectMapper.readValue(message, GenerationRequest.class);
+            generationRequest.setStatus(GenerationRequestStatus.NEW);
+            generationRequestRepository.save(generationRequest);
+        } catch (Exception e) {
+            System.err.println("error processing message: " + e.getMessage());
+        }
+        log.info("Saved generation request to database");
 
-	public void receiveIngressMessage(String message) {
-		System.out.println("Received ingress message: " + message);
-	}
+        if (generationRequest == null) {
+            log.warn("Error parsing message");
+            return;
+        }
+        log.info("Will update generation request to CLASSIFY for uuid: {}",
+                generationRequest.getUuid());
+        service.updateRequestStatus(generationRequest.getUuid(), GenerationRequestStatus.CLASSIFY);
+        log.info("Updated generation request status in the database");
+    }
 
-	public void receiveGenerationResponseMessage(String message) {
-		System.out.println("Received generation response: " + message);
-	}
+    public void receiveGenerationResponseMessage(String message) {
+        log.info("Received generation response: {}", message);
+
+        GenerationResponseDto messageDTO = null;
+        try {
+            messageDTO = new ObjectMapper().readValue(message, GenerationResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("Error parsing message: {}", e.getMessage());
+            return;
+        }
+
+        service.updateRequestStatus(messageDTO.getUuid(), messageDTO.getStatus());
+        log.info("Updated generation request status in the database");
+    }
 
 }
