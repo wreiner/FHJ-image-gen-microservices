@@ -44,7 +44,7 @@ public class OrchestrationServiceApplication {
         return container;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         SpringApplication.run(OrchestrationServiceApplication.class, args);
     }
 }
