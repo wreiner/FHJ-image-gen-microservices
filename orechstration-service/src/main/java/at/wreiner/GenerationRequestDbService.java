@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class GenerationRequestService {
+public class GenerationRequestDbService {
 
-    private static final Logger log = LoggerFactory.getLogger(GenerationRequestService.class);
+    private static final Logger log = LoggerFactory.getLogger(GenerationRequestDbService.class);
     @Autowired
     private GenerationRequestRepository repository;
 

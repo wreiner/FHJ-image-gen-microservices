@@ -32,17 +32,17 @@ public class RestClient {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Transactional
-    public void classifyGenerationRequest(UUID uuid) {
+    public boolean classifyGenerationRequest(UUID uuid) {
         log.info("Working on classification of UUID: {}", uuid);
 
         // Fetch and lock
         GenerationRequest existingGenerationRequest = repository.findByUuidLocked(uuid);
         if (existingGenerationRequest == null) {
             log.warn("Request with UUID {} not found", uuid);
-            return;
+            throw new RuntimeException("Request with UUID {} not found" + uuid);
         }
 
-        sendGenerationRequest(existingGenerationRequest);
+        return sendGenerationRequest(existingGenerationRequest);
     }
 
     private String buildJsonDataForRequest(GenerationRequest existingGenerationRequest) {
@@ -51,7 +51,7 @@ public class RestClient {
         return requestDto.toJSON();
     }
 
-    private void sendGenerationRequest(GenerationRequest existingGenerationRequest) {
+    private boolean sendGenerationRequest(GenerationRequest existingGenerationRequest) {
         String jsonData = buildJsonDataForRequest(existingGenerationRequest);
         log.debug("will send JSON data: {}", jsonData);
 
@@ -77,7 +77,7 @@ public class RestClient {
                     throw new RuntimeException("Error parsing response from classification service");
                 }
 
-                processGenerationResponse(existingGenerationRequest, responseDto);
+                return processGenerationResponse(existingGenerationRequest, responseDto);
             } else {
                 log.warn("Failed to get a successful response from classification service: {}", response.getStatusCode());
                 throw new RuntimeException("Unsuccessful response from server");
@@ -87,8 +87,10 @@ public class RestClient {
         }
     }
 
-    private void processGenerationResponse(GenerationRequest existingGenerationRequest, ClassifyResponseDto responseDto) {
-        if (responseDto.getLabel().equals("nsfw")) {
+    private boolean processGenerationResponse(GenerationRequest existingGenerationRequest, ClassifyResponseDto responseDto) {
+        boolean isNsfw = responseDto.getLabel().equals("nsfw");
+
+        if (isNsfw) {
             log.info("the prompt is classified as nsfw");
             existingGenerationRequest.setStatus(GenerationRequestStatus.NSFW);
         } else {
@@ -101,6 +103,8 @@ public class RestClient {
             log.warn("Error updating classify response for UUID {}: {}", existingGenerationRequest.getUuid(), e.getMessage());
             throw new RuntimeException("Error updating generation response: {}" + e.getMessage());
         }
+
+        return isNsfw;
     }
 }
 

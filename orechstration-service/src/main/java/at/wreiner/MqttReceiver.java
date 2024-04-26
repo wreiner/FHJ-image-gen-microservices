@@ -19,10 +19,13 @@ public class MqttReceiver {
     private GenerationRequestRepository generationRequestRepository;
 
     @Autowired
-    private GenerationRequestService service;
+    private GenerationRequestDbService service;
 
     @Autowired
     private RestClient restClient;
+
+    @Autowired
+    private RabbitMqSendService rabbitMqSendService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -48,7 +51,10 @@ public class MqttReceiver {
         service.updateRequestStatus(generationRequest.getUuid(), GenerationRequestStatus.CLASSIFY);
         log.info("Updated generation request status in the database");
 
-        restClient.classifyGenerationRequest(generationRequest.getUuid());
+        if (restClient.classifyGenerationRequest(generationRequest.getUuid())) {
+            log.info("prompt is safe, will send generation request ..");
+            rabbitMqSendService.sendToRabbitMQ(generationRequest);
+        }
     }
 
     public void receiveGenerationResponseMessage(String message) {
