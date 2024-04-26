@@ -21,6 +21,9 @@ public class MqttReceiver {
     @Autowired
     private GenerationRequestService service;
 
+    @Autowired
+    private RestClient restClient;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void receiveIngressMessage(String message) {
@@ -44,6 +47,8 @@ public class MqttReceiver {
                 generationRequest.getUuid());
         service.updateRequestStatus(generationRequest.getUuid(), GenerationRequestStatus.CLASSIFY);
         log.info("Updated generation request status in the database");
+
+        restClient.classifyGenerationRequest(generationRequest.getUuid());
     }
 
     public void receiveGenerationResponseMessage(String message) {
