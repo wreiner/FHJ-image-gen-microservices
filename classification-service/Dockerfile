@@ -22,5 +22,6 @@ RUN pip install -r /app/requirements-cpuonly.txt --extra-index-url https://downl
 EXPOSE 8000
 
 ENV NAME ClassificationService
+ENV GUNICORN_CMD_ARGS="--access-logfile - --error-logfile - --log-level info -w 2 -b 0.0.0.0:8000"
 
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "classification_service:app"]
+CMD ["gunicorn", "classification_service:app"]

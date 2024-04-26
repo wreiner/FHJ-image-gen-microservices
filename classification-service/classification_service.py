@@ -30,7 +30,7 @@ def analyze_text():
 
     prompt = request.json['prompt']
     result = sentiment_task(prompt)
-    return jsonify(result)
+    return jsonify(result[0])
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
