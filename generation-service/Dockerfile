@@ -11,6 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
 
 WORKDIR /app
 COPY generation_service.py /app
+COPY generation_service_animagine.py /app
 COPY requirements-cpuonly.txt /app
 COPY requirements-withcuda.txt /app
 
