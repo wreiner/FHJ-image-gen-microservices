@@ -42,6 +42,8 @@ public class RestClient {
             throw new RuntimeException("Request with UUID {} not found" + uuid);
         }
 
+        log.debug("Found request with UUID: {}", existingGenerationRequest.getUuid());
+
         return sendGenerationRequest(existingGenerationRequest);
     }
 
@@ -94,6 +96,7 @@ public class RestClient {
             log.info("the prompt is classified as nsfw");
             existingGenerationRequest.setStatus(GenerationRequestStatus.NSFW);
         } else {
+            log.info("the prompt is not classified as nsfw");
             existingGenerationRequest.setStatus(GenerationRequestStatus.CLASSIFIED);
         }
 
