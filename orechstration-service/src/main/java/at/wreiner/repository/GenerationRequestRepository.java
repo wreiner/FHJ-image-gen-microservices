@@ -12,4 +12,7 @@ public interface GenerationRequestRepository extends JpaRepository<GenerationReq
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT g FROM GenerationRequest g WHERE g.uuid = :uuid")
     GenerationRequest findByUuidLocked(UUID uuid);
+
+    @Query("SELECT g FROM GenerationRequest g WHERE g.uuid = :uuid")
+    GenerationRequest findByUuid(UUID uuid);
 }
