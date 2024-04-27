@@ -13,6 +13,7 @@ public class GenerationRequest {
     @Enumerated(EnumType.STRING)
     private GenerationRequestStatus status;
 
+    @Column(columnDefinition = "TEXT")
     private String prompt;
 
     public GenerationRequest() {}
