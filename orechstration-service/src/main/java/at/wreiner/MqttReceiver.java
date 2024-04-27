@@ -51,10 +51,18 @@ public class MqttReceiver {
         service.updateRequestStatus(generationRequest.getUuid(), GenerationRequestStatus.CLASSIFY);
         log.info("Updated generation request status in the database");
 
-        if (restClient.classifyGenerationRequest(generationRequest.getUuid())) {
+        boolean isNsfw = restClient.classifyGenerationRequest(generationRequest.getUuid());
+        if (!isNsfw) {
             log.info("prompt is safe, will send generation request ..");
+
+            log.info("Will update generation request to GENERATE for uuid: {}",
+                    generationRequest.getUuid());
+            service.updateRequestStatus(generationRequest.getUuid(), GenerationRequestStatus.GENERATE);
+            log.info("Updated generation request status in the database");
+
             rabbitMqSendService.sendToRabbitMQ(generationRequest);
         }
+        log.info("done processing ingress message");
     }
 
     public void receiveGenerationResponseMessage(String message) {
@@ -70,6 +78,9 @@ public class MqttReceiver {
 
         service.updateRequestStatus(messageDTO.getUuid(), messageDTO.getStatus());
         log.info("Updated generation request status in the database");
+
+        service.updateRequestStatus(messageDTO.getUuid(), GenerationRequestStatus.DONE);
+        log.info("generation request UUID: {} is done", messageDTO.getUuid());
     }
 
 }
