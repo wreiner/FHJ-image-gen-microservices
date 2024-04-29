@@ -1,13 +1,13 @@
-import os
-import json
-import torch
-
 import boto3
+import io
+import json
+import os
+import pika
+import torch
 from botocore.client import Config
 from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
-import pika
 
 # RabbitMQ connection details
 RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'localhost')
@@ -89,6 +89,55 @@ def generate_image(prompt, uuid):
     image.save(f"/{output_directory}/{uuid}.png")
     print(f"image temporarily saved for uuid: {uuid}")
 
+def generate_image_and_upload_to_s3(prompt, uuid):
+    print(f"Generating and uploading image for uuid: {uuid} with prompt: {prompt}")
+
+    unet = UNet2DConditionModel.from_config(
+        base,
+        subfolder="unet",
+        cache_dir=cache_directory
+    ).to("cpu")
+
+    unet.load_state_dict(load_file(
+        hf_hub_download(repo, ckpt, cache_dir=cache_directory),
+        device="cpu"
+    ))
+
+    pipe = StableDiffusionXLPipeline.from_pretrained(
+        base,
+        unet=unet,
+        torch_dtype=torch.float32,
+        cache_dir=cache_directory
+    ).to("cpu")
+
+    pipe.scheduler = EulerDiscreteScheduler.from_config(
+        pipe.scheduler.config,
+        timestep_spacing="trailing",
+        cache_dir=cache_directory
+    )
+
+    image = pipe(prompt, num_inference_steps=4, guidance_scale=0).images[0]
+
+    # Create an in-memory bytes buffer
+    buf = io.BytesIO()
+    image.save(buf, format='PNG')
+    buf.seek(0)
+
+    print(f"uploading image to S3 for uuid: {uuid}")
+
+    s3_endpoint = f"https://{S3_ENDPOINT}:443"
+
+    s3 = boto3.resource('s3',
+                        endpoint_url=s3_endpoint,
+                        aws_access_key_id=S3_ACCESS_KEY,
+                        aws_secret_access_key=S3_SECRET_KEY,
+                        config=Config(signature_version='s3v4'),
+                        region_name='us-east-1')
+    remote_filename = f"{uuid}.png"
+    s3.Bucket(S3_BUCKET).upload_fileobj(buf, remote_filename)
+
+    print(f"image uploaded to S3 for uuid: {uuid}")
+
 def save_image_to_s3(uuid):
     print(f"uploading image to S3 for uuid: {uuid}")
     upload_file = f"/{output_directory}/{uuid}.png"
@@ -144,9 +193,10 @@ def process_message(channel, method, properties, body):
 
     print(f"parsed uuid: {uuid} with prompt: {prompt}")
 
-    generate_image(prompt, uuid)
-    save_image_to_s3(uuid)
-    remove_temporary_image(uuid)
+    generate_image_and_upload_to_s3(prompt, uuid)
+    # generate_image()
+    # save_image_to_s3(uuid)
+    # remove_temporary_image(uuid)
     send_generation_response(uuid)
 
 
