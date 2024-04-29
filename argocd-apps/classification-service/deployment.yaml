@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: classify-service
+  name: classification-service
   namespace: image-gen
   labels:
-    app: classify-service
+    app: classification-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: classify-service
+      app: classification-service
   template:
     metadata:
       labels:
-        app: classify-service
+        app: classification-service
     spec:
       containers:
-        - name: classify-service
+        - name: classification-service
           image: 192.168.2.102:5000/classification-service:0.4
           ports:
             - containerPort: 8000
