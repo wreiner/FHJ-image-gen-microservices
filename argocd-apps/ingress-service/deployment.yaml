@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-service
+  namespace: image-gen
+  labels:
+    app: ingress-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-service
+  template:
+    metadata:
+      labels:
+        app: ingress-service
+    spec:
+      containers:
+        - name: ingress-service
+          image: 192.168.2.102:5000/image-gen-ingress-service:0.2
+          ports:
+            - containerPort: 5001
+          env:
+            - name: RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: host
+            - name: RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: port
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: password

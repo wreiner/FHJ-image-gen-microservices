@@ -1,0 +1,16 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ingress-route
+  namespace: image-gen
+spec:
+  host: imagegen.wreiner.at
+  to:
+    kind: Service
+    name: ingress-service
+  port:
+    targetPort: 5001
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
