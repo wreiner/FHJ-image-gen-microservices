@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestration-service
+  namespace: image-gen
+  labels:
+    app: orchestration-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestration-service
+  template:
+    metadata:
+      labels:
+        app: orchestration-service
+    spec:
+      containers:
+        - name: orchestration-service
+          image: 192.168.2.102:5000/image-gen-orchestration-service:0.2
+          env:
+            - name: CLASSIFICATION_SERVICE_URL
+              value: "http://classification-service:8000/analyze"
+            - name: RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: host
+            - name: RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: port
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: password
+            - name: PSQL_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: jdbc-uri
+            - name: PSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: user
+            - name: PSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: password
