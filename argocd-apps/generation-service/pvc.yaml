@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: generation-service-model-pvc
+  namespace: image-gen
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: ocs-storagecluster-ceph-rbd

@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: generation-service
+  namespace: image-gen
+  labels:
+    app: generation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: generation-service
+  template:
+    metadata:
+      labels:
+        app: generation-service
+    spec:
+      containers:
+        - name: generation-service
+          image: 192.168.2.102:5000/generation-service:0.3
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: "/models"
+              name: models
+              readOnly: false
+          env:
+            - name: RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: host
+            - name: RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: port
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: username
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit01-default-user
+                  key: password
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pictures-bucket
+                  key: AWS_ACCESS_KEY_ID
+            - name: S3_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: pictures-bucket
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: pictures-bucket
+                  key: BUCKET_HOST
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: pictures-bucket
+                  key: BUCKET_NAME
+            - name: AWS_CA_BUNDLE
+              value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+            - name: TRANSFORMERS_CACHE
+              value: /models
+            - name: HF_HOME
+              value: /models
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: generation-service-model-pvc

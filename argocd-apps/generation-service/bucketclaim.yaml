@@ -1,0 +1,11 @@
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: pictures-bucket
+  namespace: image-gen
+spec:
+  additionalConfig:
+    bucketclass: noobaa-default-bucket-class
+  generateBucketName: pictures-bucket
+  storageClassName: openshift-storage.noobaa.io
