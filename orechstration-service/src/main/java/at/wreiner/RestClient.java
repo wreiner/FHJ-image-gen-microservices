@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,6 +26,9 @@ import java.util.UUID;
 public class RestClient {
 
     private static final Logger log = LoggerFactory.getLogger(RestClient.class);
+
+    @Value("${classification-service.url}")
+    private String classificationServiceUrl;
 
     @Autowired
     private GenerationRequestRepository repository;
@@ -62,12 +66,11 @@ public class RestClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(jsonData, headers);
 
-        // Make the REST call
-        String url = "http://192.168.2.102:8383/analyze";
+        log.debug("sending request to classification service: {}", classificationServiceUrl);
 
         try {
             // Make the REST call and capture the response
-            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(classificationServiceUrl, request, String.class);
 
             // Check if response is successful
             if (response.getStatusCode().is2xxSuccessful()) {
