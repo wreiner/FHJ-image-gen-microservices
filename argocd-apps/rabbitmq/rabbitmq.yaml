@@ -1,0 +1,33 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbit01
+  namespace: image-gen
+spec:
+  delayStartSeconds: 30
+  secretBackend:
+    externalSecret: {}
+  resources:
+    limits:
+      cpu: '2'
+      memory: 2Gi
+    requests:
+      cpu: '1'
+      memory: 2Gi
+  terminationGracePeriodSeconds: 604800
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers: []
+            securityContext: {}
+  service:
+    type: ClusterIP
+  tls: {}
+  image: 'rabbitmq:3.13.1-management'
+  replicas: 1
+  rabbitmq: {}
+  persistence:
+    storage: 500Mi
+    storageClassName: ocs-storagecluster-ceph-rbd
