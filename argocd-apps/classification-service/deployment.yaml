@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: classify-service
+  namespace: image-gen
+  labels:
+    app: classify-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: classify-service
+  template:
+    metadata:
+      labels:
+        app: classify-service
+    spec:
+      containers:
+        - name: classify-service
+          image: 192.168.2.102:5000/classification-service:0.4
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - mountPath: "/models"
+              name: models
+              readOnly: false
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: classification-service-model-pvc
