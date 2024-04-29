@@ -48,6 +48,7 @@ public class GenerateRequestImpl implements GenerateRequestService {
             logger.info("Successfully sent message to RabbitMQ");
         } catch (Exception e) {
             logger.error("Failed to send message to RabbitMQ", e);
+            throw new RuntimeException("Failed to send message to RabbitMQ", e);
         }
     }
 }
