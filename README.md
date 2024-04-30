@@ -19,5 +19,5 @@ The project is composed of the following services:
 
 ## Additional information about the cluster and services
 
-- [Posgtres notes](docs/postgres.md)
+- [Postgres notes](docs/postgres.md)
 - [OpenShift notes](docs/OpenShift-notes.md)
