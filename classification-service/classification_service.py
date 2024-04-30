@@ -29,6 +29,8 @@ def analyze_text():
         return jsonify({'error': 'No prompt provided'}), 400
 
     prompt = request.json['prompt']
+    print(f"will analyze prompt {prompt}")
+
     result = sentiment_task(prompt)
     return jsonify(result[0])
 
