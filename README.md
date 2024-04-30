@@ -16,3 +16,8 @@ The project is composed of the following services:
 ## Architectural Overview
 
 ![docs/architecture-overview.png](docs/architecture-overview.png)
+
+## Additional information about the cluster and services
+
+- [Posgtres notes](docs/postgres.md)
+- [OpenShift notes](docs/OpenShift-notes.md)
