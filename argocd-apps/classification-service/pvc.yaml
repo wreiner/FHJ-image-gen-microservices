@@ -6,8 +6,8 @@ metadata:
   namespace: image-gen
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 500Mi
-  storageClassName: ocs-storagecluster-ceph-rbd
+  storageClassName: ocs-storagecluster-cephfs
