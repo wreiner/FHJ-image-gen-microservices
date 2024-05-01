@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/download-image")
+@RequestMapping("/egress")
 public class ImageDownloadController {
     @Autowired
     private AmazonS3 s3client;
@@ -28,7 +28,7 @@ public class ImageDownloadController {
     @Value("${s3.s3_bucket}")
     private String bucketName;
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/download-image/{uuid}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable UUID uuid) {
         try {
             S3Object s3object = s3client.getObject(new GetObjectRequest(bucketName, uuid.toString() + ".png"));

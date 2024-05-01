@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/status")
+@RequestMapping("/egress")
 public class GenerationRequestController {
     @Autowired
     private GenerationRequestRepository repository;
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/status/{uuid}")
     public ResponseEntity<GenerationRequest> getGenerationRequest(@PathVariable UUID uuid) {
         Optional<GenerationRequest> generationRequest = repository.findByUuid(uuid);
         return generationRequest.map(ResponseEntity::ok)
