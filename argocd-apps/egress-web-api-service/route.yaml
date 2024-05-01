@@ -1,0 +1,17 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: egress-route
+  namespace: image-gen
+spec:
+  host: imagegen.wreiner.at
+  path: "/egress"
+  to:
+    kind: Service
+    name: egress-service
+  port:
+    targetPort: 5002
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

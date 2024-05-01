@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: egress-web-api-service
+  namespace: image-gen
+  labels:
+    app: egress-web-api-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: egress-web-api-service
+  template:
+    metadata:
+      labels:
+        app: egress-web-api-service
+    spec:
+      containers:
+        - name: egress-web-api-service
+          image: 192.168.2.102:5000/image-gen-egress-web-api-service:0.3
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: pictures-bucket
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pictures-bucket
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: pictures-bucket
+                  key: BUCKET_HOST
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: pictures-bucket
+                  key: BUCKET_NAME
+            - name: S3_USE_HTTPS
+              value: "true"
+            - name: S3_VERIFY_SSL
+              value: "false"
+            - name: PSQL_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: jdbc-uri
+            - name: PSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: user
+            - name: PSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql01-app
+                  key: password
