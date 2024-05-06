@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ingress</module>
-        <module>orechstration-service</module>
+        <module>orchestration-service</module>
     </modules>
 
 
