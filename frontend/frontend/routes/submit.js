@@ -8,7 +8,7 @@ router.post('/submit', async (req, res) => {
     try {
         const prompt = req.body.prompt;
 
-        const url = "https://imagegen.wreiner.at/createGenerateRequest";;
+        const url = "https://" + IMAGE_GEN_API_URL + "/ingress/createGenerateRequest";
 
         // Create an instance of https.Agent to accept self-signed certificates
         const agent = new https.Agent({ rejectUnauthorized: false });

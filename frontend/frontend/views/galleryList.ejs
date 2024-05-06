@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Generation Requests</title>
+    <style>
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-item {
+            margin: 10px;
+        }
+        .image-item img {
+            width: 100px; /* Adjust the size of the images as needed */
+            height: 100px; /* Adjust the size of the images as needed */
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>List of Generation Requests</h1>
+
+    <div class="image-gallery">
+        <% for (const request of requests) { %>
+            <div class="image-item">
+                <% if (request.status === 'DONE') { %>
+                    <a href="/details/<%= request.uuid %>">
+                        <img src="/image/<%= request.uuid %>" alt="<%= request.prompt %>">
+                    </a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+
+    <br>
+    <a href="/">Submit another prompt</a>
+</body>
+</html>

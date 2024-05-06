@@ -4,11 +4,11 @@ var router = express.Router();
 const axios = require('axios');
 const https = require('https');
 
-router.get('/details/:uuid', async function(req, res, next) {
+router.get('/list', async function(req, res, next) {
   try {
     const uuid = req.params.uuid;
 
-    const url = "https://" + IMAGE_GEN_API_URL + "/egress/status/" + uuid;
+    const url = "https://" + IMAGE_GEN_API_URL + "/egress/get_all_generation_requests";
     console.log("will fetch: " + url);
 
     axios.get(url, {
@@ -17,11 +17,13 @@ router.get('/details/:uuid', async function(req, res, next) {
     .then(response => {
       console.log(response.data);
 
-      if (response.data.status === "DONE") {
-        response.data.image_url = "/image/" + uuid;
+      // Check if the 'gallery' query parameter exists
+      if (req.query.gallery) {
+        // Render a different EJS template based on the presence of 'gallery' parameter
+        res.render('galleryList', { requests: response.data });
+      } else {
+        res.render('list', { requests: response.data });
       }
-
-      res.render('details', response.data);
     })
     .catch(error => {
       console.error(error);

@@ -3,30 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result of request <%= uuid %></title>
+    <title>Result of Request <%= uuid %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        p {
+            color: #555;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-top: 20px;
+        }
+        .refresh-message {
+            font-style: italic;
+            margin-top: 20px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
-    <h1>Result of request <%= uuid %></h1>
-    <p>Prompt:</p>
-    <p><%= prompt %></p>
+    <div class="container">
+        <h1>Result of Request <%= uuid %></h1>
+        <p><strong>Prompt:</strong></p>
+        <p><%= prompt %></p>
 
-    <% if (status === "DONE") { %>
-        <img src="<%= image_url %>" alt="Generated image of <%= prompt %>">
-    <% } else if (status === "NSFW") { %>
-        <p>Your prompt was classified as NSFW.</p>
-        <p>Please try again with a different prompt.</p>
-    <% } else { %>
-        <p>Your request is being processed. This can take up to 15 minutes to complete.</p>
-        <p>This page will auto-refresh until the image was generated.</p>
+        <% if (status === "DONE") { %>
+            <img src="<%= image_url %>" alt="Generated image of <%= prompt %>">
+        <% } else if (status === "NSFW") { %>
+            <p>Your prompt was classified as NSFW.</p>
+            <p>Please try again with a different prompt.</p>
+        <% } else { %>
+            <p>Your request is being processed. This can take up to 15 minutes to complete.</p>
+            <p class="refresh-message">This page will auto-refresh until the image is generated.</p>
 
-        <script>
-            setTimeout(() => {
-                window.location.reload();
-            }, 20000);
-        </script>
-    <% } %>
+            <script>
+                setTimeout(() => {
+                    window.location.reload();
+                }, 20000);
+            </script>
+        <% } %>
 
-    <br>
-    <a href="/">Submit another prompt</a>
+        <br>
+        <a href="/">Submit another prompt</a>
+    </div>
 </body>
 </html>
