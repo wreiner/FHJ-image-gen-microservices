@@ -11,6 +11,7 @@
     <modules>
         <module>ingress</module>
         <module>orchestration-service</module>
+        <module>egress-web-api</module>
     </modules>
 
 
