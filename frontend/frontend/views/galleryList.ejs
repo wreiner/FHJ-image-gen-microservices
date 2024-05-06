@@ -3,24 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List of Generation Requests</title>
+    <title>Gallery of Generation Requests</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
         .image-gallery {
             display: flex;
             flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
         }
         .image-item {
             margin: 10px;
+            text-align: center;
         }
         .image-item img {
-            width: 100px; /* Adjust the size of the images as needed */
-            height: 100px; /* Adjust the size of the images as needed */
+            width: 150px; /* Adjust the size of the images as needed */
+            height: 150px; /* Adjust the size of the images as needed */
             display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .image-item img:hover {
+            transform: scale(1.1);
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>List of Generation Requests</h1>
+    <h1>Gallery of Generation Requests</h1>
 
     <div class="image-gallery">
         <% for (const request of requests) { %>
@@ -34,7 +60,8 @@
         <% } %>
     </div>
 
-    <br>
-    <a href="/">Submit another prompt</a>
+    <div style="text-align: center;">
+        <a href="/">Submit another prompt</a>
+    </div>
 </body>
 </html>
