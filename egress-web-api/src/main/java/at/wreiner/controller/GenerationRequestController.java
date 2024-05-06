@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,5 +24,10 @@ public class GenerationRequestController {
         Optional<GenerationRequest> generationRequest = repository.findByUuid(uuid);
         return generationRequest.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/get_all_generation_requests")
+    public List<GenerationRequest> getAllGenerationRequests() {
+        return repository.findAll();
     }
 }
