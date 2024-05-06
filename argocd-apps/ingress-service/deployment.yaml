@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ingress-service
-          image: 192.168.2.102:5000/image-gen-ingress-service:0.2
+          image: 192.168.2.102:5000/image-gen-ingress-service:0.3
           ports:
             - containerPort: 5001
           env:

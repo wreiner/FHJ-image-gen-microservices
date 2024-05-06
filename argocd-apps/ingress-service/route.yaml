@@ -6,6 +6,7 @@ metadata:
   namespace: image-gen
 spec:
   host: imagegen.wreiner.at
+  path: "/ingress"
   to:
     kind: Service
     name: ingress-service

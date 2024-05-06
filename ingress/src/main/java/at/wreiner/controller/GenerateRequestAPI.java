@@ -18,7 +18,7 @@ public class GenerateRequestAPI {
         return "ingress-service is working!";
     }
 
-    @PostMapping(value = "/createGenerateRequest", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/ingress/createGenerateRequest", consumes = "application/json", produces = "application/json")
     public GenerateRequest createPerson(@RequestBody GenerateRequest request) {
         return generateRequestService.saveUpdateGenerateRequest(request);
     }
