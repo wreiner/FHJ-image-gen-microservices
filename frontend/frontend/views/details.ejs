@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result of request <%= uuid %></title>
+</head>
+<body>
+    <h1>Result of request <%= uuid %></h1>
+    <p>Prompt:</p>
+    <p><%= prompt %></p>
+
+    <% if (status === "DONE") { %>
+        <img src="<%= image_url %>" alt="Generated image of <%= prompt %>">
+    <% } else if (status === "NSFW") { %>
+        <p>Your prompt was classified as NSFW.</p>
+        <p>Please try again with a different prompt.</p>
+    <% } else { %>
+        <p>Your request is being processed. This can take up to 15 minutes to complete.</p>
+        <p>This page will auto-refresh until the image was generated.</p>
+
+        <script>
+            setTimeout(() => {
+                window.location.reload();
+            }, 20000);
+        </script>
+    <% } %>
+
+    <br>
+    <a href="/">Submit another prompt</a>
+</body>
+</html>
