@@ -11,7 +11,7 @@ services:
       - "80:80"
 
   frontend:
-    image: 192.168.2.102:5000/image-gen-frontend:0.2
+    image: 192.168.2.102:5000/image-gen-frontend:0.3
     container_name: frontend
     environment:
       - IMAGE_GEN_API_URL=imagegen.wreiner.at
