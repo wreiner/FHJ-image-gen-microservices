@@ -22,6 +22,16 @@ The project is composed of the following services:
 
 ![docs/architecture-overview.png](docs/architecture-overview.png)
 
+## Screenshots
+
+![docs/screenshot-gallery.png](docs/screenshot-gallery.png)
+
+![docs/screenshot-list.png](docs/screenshot-list.png)
+
+![docs/screenshot-details.png](docs/screenshot-details.png)
+
+![docs/screenshot-new-prompt.png](docs/screenshot-new-prompt.png)
+
 ## Additional information about the cluster and services
 
 - [Postgres notes](docs/postgres.md)
