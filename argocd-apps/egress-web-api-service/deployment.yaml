@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: egress-web-api-service
-          image: 192.168.2.102:5000/image-gen-egress-web-api-service:0.3
+          image: 192.168.2.102:5000/image-gen-egress-web-api-service:0.6
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
